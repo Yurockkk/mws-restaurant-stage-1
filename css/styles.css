@@ -285,14 +285,14 @@ nav h1 a {
   color: #666;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 550px) {
   #restaurants-list li {
     box-sizing: border-box;
     width: 100%;
   }
 }
 
-@media screen and (min-width: 501px) and (max-width: 900px) {
+@media screen and (min-width: 551px) and (max-width: 900px) {
   #restaurants-list li {
     box-sizing: border-box;
     width: calc((100% - 20px)/2);

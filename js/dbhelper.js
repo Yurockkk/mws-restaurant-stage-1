@@ -150,7 +150,17 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph.split('.')[0]}.${restaurant.photograph.split('.')[1]}`);
+  }
+
+  /**
+  * Setup proper image srcset
+  */
+  static imageSourceSetForRestaureant(restaurant) {
+    var imgName = restaurant.photograph;
+    var imgSrcSet = `/img/${imgName.split('.')[0]}_small.${imgName.split('.')[1]} 450w, /img/${imgName.split('.')[0]}.${imgName.split('.')[1]} 800w`;
+    console.log(`imgSrcSet: ${imgSrcSet}`);
+    return imgSrcSet;
   }
 
   /**
