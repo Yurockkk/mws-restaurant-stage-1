@@ -1,6 +1,15 @@
 @charset "utf-8";
 /* CSS Document */
 
+img,embed, object, video {
+  max-width: 100%;
+}
+
+nav, a, button{
+  min-width: 48px;
+  min-height: 48px;
+}
+
 body,td,th,p{
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10pt;
@@ -131,6 +140,8 @@ nav h1 a {
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
+  display: flex;
+  flex-wrap: wrap;
   background-color: #f3f3f3;
   list-style: outside none none;
   margin: 0;
@@ -141,7 +152,7 @@ nav h1 a {
   background-color: #fff;
   border: 2px solid #ccc;
   font-family: Arial,sans-serif;
-  margin: 15px;
+  margin: 5px;
   min-height: 380px;
   padding: 0 30px 25px;
   text-align: left;
@@ -272,4 +283,44 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+@media screen and (max-width: 500px) {
+  #restaurants-list li {
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 501px) and (max-width: 900px) {
+  #restaurants-list li {
+    box-sizing: border-box;
+    width: calc((100% - 20px)/2);
+  }
+}
+
+
+@media screen and (min-width: 901px) and (max-width: 1300px){
+  #restaurants-list li {
+    box-sizing: border-box;
+    width: calc((100% - 30px)/3);
+  }
+}
+
+@media screen and (min-width: 1301px) and (max-width: 1600px){
+  #restaurants-list li {
+    box-sizing: border-box;
+    width: calc((100% - 40px)/4);
+  }
+}
+
+@media screen and (min-width: 1601px){
+  #restaurants-list {
+    width: 1601px;
+    margin: auto;
+  }
+  #restaurants-list li {
+    box-sizing: border-box;
+    width: calc((100% - 40px)/4);
+  }
 }
