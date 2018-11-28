@@ -158,7 +158,7 @@ class DBHelper {
   */
   static imageSourceSetForRestaureant(restaurant) {
     var imgName = restaurant.photograph;
-    var imgSrcSet = `/img/${imgName.split('.')[0]}_small.${imgName.split('.')[1]} 450w, /img/${imgName.split('.')[0]}.${imgName.split('.')[1]} 800w`;
+    var imgSrcSet = `/img/${imgName.split('.')[0]}_small.${imgName.split('.')[1]} 2x, /img/${imgName.split('.')[0]}.${imgName.split('.')[1]} 3x`;
     console.log(`imgSrcSet: ${imgSrcSet}`);
     return imgSrcSet;
   }
