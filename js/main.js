@@ -3,14 +3,15 @@ let restaurants,
   cuisines
 var map
 var markers = []
-
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  console.log(`DOMContentLoaded()`);
   fetchNeighborhoods();
   fetchCuisines();
 });
+
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -71,6 +72,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+  console.log(`initMap()`);
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -80,8 +82,22 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+  // asyncForEach(self.map.getDiv().childNodes, enableTabIndex);
   updateRestaurants();
 }
+
+// async function asyncForEach(array, callback) {
+//   for (let index = 0; index < array.length; index++) {
+//     await callback(array[index]);
+//   }
+// }
+
+// enableTabIndex = (node) => {
+//   node.tabIndex = -1;
+//   console.log(`set the tabIndex of the node ${node} to -1`);
+//   console.log(node.childNodes);
+//   asyncForEach(node.childNodes.firstChild, enableTabIndex);
+// }
 
 /**
  * Update page and map for current restaurants.
@@ -160,6 +176,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.title = `view details about ${restaurant.name}`;
   li.append(more)
 
   return li
