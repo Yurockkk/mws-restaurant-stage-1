@@ -10,9 +10,63 @@ document.addEventListener('DOMContentLoaded', (event) => {
   console.log(`DOMContentLoaded()`);
   fetchNeighborhoods();
   fetchCuisines();
+  // Add a service worker to the project
+  registerServiceWorker();
 });
 
+registerServiceWorker = () => {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+        // Registration was successful
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        
+        if(!navigator.serviceWorker.controller){
+          return;
+        }
+        if(registration.waiting){
+          //there's an update ready!
+          console.log("there's an update ready!");
+          navigator.serviceWorker.controller.postMessage({action: 'skipWaiting'});
+        }
+        if(registration.installing){
+          //there's an update in progress
+          console.log("there's an update progress!");
+          registration.addEventListener('statechange', function(){
+            if(this.state == 'installed'){
+              //there's an update ready!
+              console.log("there's an update ready!");
+              navigator.serviceWorker.controller.postMessage({action: 'skipWaiting'});
+            }
+          })
+        }
 
+        registration.addEventListener('updatefound', function() {
+          console.log("In updatefound event");
+          registration.installing.addEventListener('statechange', function(){
+            if(this.state == 'installed'){
+              //there's an update ready!
+              console.log("there's an update ready!");
+              navigator.serviceWorker.controller.postMessage({action: 'skipWaiting'});
+              // window.location.reload();
+            }
+          })
+        });
+
+      }, function(err) {
+        // registration failed :(
+        console.log('ServiceWorker registration failed: ', err);
+      });
+      var refreshing;
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        console.log('in controllerchange!');
+        if (refreshing) return;
+        window.location.reload();
+        refreshing = true;
+      });
+    });
+  }
+}
 /**
  * Fetch all neighborhoods and set their HTML.
  */
