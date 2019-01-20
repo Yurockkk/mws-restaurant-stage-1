@@ -227,13 +227,11 @@ nav h1 a {
   height: 17vh;
   width: 100%;
   z-index: 1000;
-  border: 5px solid red;
 }
 .inside main {
   position: relative;
   top: 17vh;
   width: 100%;
-  border: 5px solid green;
   flex: 1 0 auto;
   display: flex;
 }

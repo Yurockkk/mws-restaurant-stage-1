@@ -137,21 +137,33 @@ window.initMap = () => {
     scrollwheel: false
   });
   // asyncForEach(self.map.getDiv().childNodes, enableTabIndex);
+  google.maps.event.addListener(self.map, 'tilesloaded', () => {
+    console.log('in tilesloaded');
+    //var map = document.getElementById('map');
+    //console.log(map);
+    document.querySelector('iframe').setAttribute('tabindex','-1');
+    console.log(map.querySelectorAll('div'));
+    [].slice.apply(self.map.querySelectorAll('div')).forEach(function(item) {
+          console.log(item);
+          item.setAttribute('tabindex','-1');
+      });
+    [].slice.apply(self.map.querySelectorAll('button')).forEach(function(item) {
+          console.log(item);
+          item.setAttribute('tabindex','-1');
+      });
+    [].slice.apply(self.map.querySelectorAll('a')).forEach(function(item) {
+          console.log(item);
+          item.setAttribute('tabindex','-1');
+      });
+    [].slice.apply(self.map.querySelectorAll('div.gm-style')).forEach(function(item) {
+          console.log(item);
+          item.setAttribute('tabindex','-1');
+      });
+    
+  });
   updateRestaurants();
+
 }
-
-// async function asyncForEach(array, callback) {
-//   for (let index = 0; index < array.length; index++) {
-//     await callback(array[index]);
-//   }
-// }
-
-// enableTabIndex = (node) => {
-//   node.tabIndex = -1;
-//   console.log(`set the tabIndex of the node ${node} to -1`);
-//   console.log(node.childNodes);
-//   asyncForEach(node.childNodes.firstChild, enableTabIndex);
-// }
 
 /**
  * Update page and map for current restaurants.
@@ -215,7 +227,7 @@ createRestaurantHTML = (restaurant) => {
   image.alt = `picture of the restaurant ${restaurant.name}`;
   li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
 
