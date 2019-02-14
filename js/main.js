@@ -136,31 +136,31 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
-  // asyncForEach(self.map.getDiv().childNodes, enableTabIndex);
-  google.maps.event.addListener(self.map, 'tilesloaded', () => {
-    console.log('in tilesloaded');
-    //var map = document.getElementById('map');
-    //console.log(map);
-    document.querySelector('iframe').setAttribute('tabindex','-1');
-    console.log(map.querySelectorAll('div'));
-    [].slice.apply(self.map.querySelectorAll('div')).forEach(function(item) {
-          console.log(item);
-          item.setAttribute('tabindex','-1');
-      });
-    [].slice.apply(self.map.querySelectorAll('button')).forEach(function(item) {
-          console.log(item);
-          item.setAttribute('tabindex','-1');
-      });
-    [].slice.apply(self.map.querySelectorAll('a')).forEach(function(item) {
-          console.log(item);
-          item.setAttribute('tabindex','-1');
-      });
-    [].slice.apply(self.map.querySelectorAll('div.gm-style')).forEach(function(item) {
-          console.log(item);
-          item.setAttribute('tabindex','-1');
-      });
+  
+  // google.maps.event.addListener(self.map, 'tilesloaded', () => {
+  //   console.log('in tilesloaded');
+  //   //var map = document.getElementById('map');
+  //   //console.log(map);
+  //   document.querySelector('iframe').setAttribute('tabindex','-1');
+  //   console.log(map.querySelectorAll('div'));
+  //   [].slice.apply(self.map.querySelectorAll('div')).forEach(function(item) {
+  //         console.log(item);
+  //         item.setAttribute('tabindex','-1');
+  //     });
+  //   [].slice.apply(self.map.querySelectorAll('button')).forEach(function(item) {
+  //         console.log(item);
+  //         item.setAttribute('tabindex','-1');
+  //     });
+  //   [].slice.apply(self.map.querySelectorAll('a')).forEach(function(item) {
+  //         console.log(item);
+  //         item.setAttribute('tabindex','-1');
+  //     });
+  //   [].slice.apply(self.map.querySelectorAll('div.gm-style')).forEach(function(item) {
+  //         console.log(item);
+  //         item.setAttribute('tabindex','-1');
+  //     });
     
-  });
+  // });
   updateRestaurants();
 
 }
