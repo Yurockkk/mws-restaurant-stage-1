@@ -8,10 +8,10 @@ var markers = []
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   console.log(`DOMContentLoaded()`);
-  fetchNeighborhoods();
-  fetchCuisines();
   // Add a service worker to the project
   registerServiceWorker();
+  fetchNeighborhoods();
+  fetchCuisines();
 });
 
 registerServiceWorker = () => {

@@ -1,3 +1,5 @@
+let dbPromise = null;
+let isOpen = false;
 /**
  * Common database helper functions.
  */
@@ -8,27 +10,46 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+    console.log(dbPromise);
+    if(!isOpen){
+      dbPromise = DBHelper.openDatabase();
+      isOpen = true;
+    }
+    dbPromise.then(db => {
+      return db.transaction('restaurants')
+      .objectStore('restaurants').getAll();
+    }).then(allCachedRestaurants => {
+      console.log(`------allCachedRestaurants`);
+      console.log(allCachedRestaurants);
+      if(allCachedRestaurants.length > 0){
+        callback(null,allCachedRestaurants);
+      }else{
+        fetch(DBHelper.DATABASE_URL).then((response) => {
+          if(response.ok) return response.json();
+        }).then((restaurants) => {
+          //TODO: caches restaurants data and save them into idb before retuning the result
+          console.log(`------restaurants`);
+          console.log(restaurants);
+          restaurants.forEach((restaurant) => {
+            dbPromise.then((db) => {
+              let tx = db.transaction('restaurants','readwrite');
+              let restaurantStore = tx.objectStore('restaurants');
+              restaurantStore.put(restaurant);
+              return tx.complete;
+            });
+          });
+          callback(null, restaurants);
+        });
       }
-    };
-    xhr.send();
+    });
   }
 
   /**
@@ -54,7 +75,7 @@ class DBHelper {
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
-    // Fetch all restaurants  with proper error handling
+    // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
@@ -150,7 +171,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph.split('.')[0]}.${restaurant.photograph.split('.')[1]}`);
+    return restaurant.photograph ? (`/img/${restaurant.photograph}.jpg`) : (`http://localhost:8000/img/dr-evil.gif`);
   }
 
   /**
@@ -158,7 +179,8 @@ class DBHelper {
   */
   static imageSourceSetForRestaureant(restaurant) {
     var imgName = restaurant.photograph;
-    var imgSrcSet = `/img/${imgName.split('.')[0]}_small.${imgName.split('.')[1]} 2x, /img/${imgName.split('.')[0]}.${imgName.split('.')[1]} 3x`;
+    console.log(`imgName: ${imgName}`);
+    var imgSrcSet = imgName ? `/img/${imgName}_small.jpg 2x, /img/${imgName}.jpg 3x` : `http://localhost:8000/img/dr-evil.gif`;
     console.log(`imgSrcSet: ${imgSrcSet}`);
     return imgSrcSet;
   }
@@ -175,6 +197,21 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  static async openDatabase() {
+    // If the browser doesn't support service worker,
+    // we don't care about having a database
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+
+    return await idb.openDb('my-restaurant', 1, (upgradeDb) => {
+      let restaurantStore = upgradeDb.createObjectStore('restaurants', {
+        keyPath: 'id'
+      });
+      // store.createIndex('by-date', 'time');
+    });
   }
 
 }

@@ -1,5 +1,9 @@
 var staticCacheName = 'my-restaurant-v2';
-
+var contentImgsCache = 'my-restaurant-imgs';
+var allCaches = [
+	staticCacheName,
+	contentImgsCache
+];
 //'install' event get triggered when the new SW is in waiting status
 self.addEventListener('install', function(event){
 	var urlToCache = [
@@ -8,7 +12,6 @@ self.addEventListener('install', function(event){
 		'config.js',
 		'js/dbhelper.js',
 		'js/main.js',
-		'data/restaurants.json'
 		// 'img/1.jpg',
 		// 'img/2.jpg',
 		// 'img/3.jpg',
@@ -65,6 +68,13 @@ self.addEventListener('fetch', function(event) {
 	// 		return new response("something went wrong!")
 	// 	})
 	// );
+	
+	// var requestUrl = new URL(event.request.url);
+	// if(requestUrl.origin === location.origin){
+
+		
+	// }
+
 	event.respondWith(
 		caches.match(event.request).then((response) => {
 			return response || fetch(event.request);
