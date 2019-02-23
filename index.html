@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -24,9 +24,11 @@
     <section>
       <div class="filter-options" id="filter-options">
         <h2>Filter Results</h2>
+        <label for="neighborhoods-select">dropdown</label>
         <select id="neighborhoods-select" name="neighborhoods dropdown" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
+        <label for="cuisines-select">dropdown</label>
         <select id="cuisines-select" name="cuisines dropdown" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
