@@ -1,0 +1,21 @@
+{
+  "name": "restaurant_review",
+  "short_name": "restreview",
+  "scope": "/",
+  "icons": [
+  	{
+	    "src": "/img/1_small.png",
+	    "type": "image/png",
+	    "sizes": "192x192"
+	  },
+	  {
+	    "src": "/img/1_small.png",
+	    "type": "image/png",
+	    "sizes": "512x512"
+	  }
+  ],
+  "display": "standalone",
+  "start_url": "/",
+  "theme_color": "#317EFB",
+  "background_color": "#33FF7A"
+}
