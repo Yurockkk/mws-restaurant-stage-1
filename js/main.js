@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   registerServiceWorker();
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
 });
 
 registerServiceWorker = () => {
