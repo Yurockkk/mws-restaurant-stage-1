@@ -21,7 +21,13 @@ registerServiceWorker = () => {
       navigator.serviceWorker.register('/sw.js').then(function(registration) {
         // Registration was successful
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        
+
+        //try to trigger sync event
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+          console.log('[ServiceWorker] is ready - sync is registered');
+          return swRegistration.sync.register('taggg');
+        });
+
         if(!navigator.serviceWorker.controller){
           return;
         }

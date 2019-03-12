@@ -170,3 +170,15 @@ self.addEventListener('message', function(event){
 		self.skipWaiting();
 	}
 });
+
+self.addEventListener('sync', (event) => {
+	if(event.tag == 'taggg'){
+		console.log('event.tag == taggg!!');
+		event.waitUntil(doSomeStuff());
+	}
+})
+
+doSomeStuff = () => {
+	console.log('do some stuff gets called!');
+	console.log(idb);
+}
