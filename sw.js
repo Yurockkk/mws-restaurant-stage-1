@@ -1,4 +1,4 @@
-var staticCacheName = 'my-restaurant-v2';
+var staticCacheName = 'my-restaurant-v1';
 var contentImgsCache = 'my-restaurant-imgs';
 var allCaches = [
 	staticCacheName,

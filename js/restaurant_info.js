@@ -1,4 +1,4 @@
-let restaurant;
+let restaurant,reviewBox;
 var map;
 
 /**
@@ -101,6 +101,16 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
+  reviewBox = document.createElement('input');
+  reviewBox.id = 'review-text-box';
+  reviewBox.type = 'text';
+  const sendBtn = document.createElement('button');
+  sendBtn.id = 'send-btn';
+  sendBtn.onclick = onBtnClick;
+  sendBtn.innerHTML = 'Send';
+  container.appendChild(reviewBox);
+  container.appendChild(sendBtn);
+
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -162,4 +172,10 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+onBtnClick = (e) => {
+  console.log('in onSendClick!');
+  console.log(reviewBox.value);
+  
 }
