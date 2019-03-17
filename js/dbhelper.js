@@ -214,4 +214,16 @@ class DBHelper {
     });
   }
 
+  static fetchReviewsByRestaurantId(id, callback) {
+    const url = `http://localhost:1337/reviews/?restaurant_id=${id}`;
+    fetch(url).then((response) => {
+      if(response.ok) return response.json();
+    }).then((reviews) => {
+      console.log(reviews);
+      callback(null, reviews);
+    }).catch((error) => {
+      console.log(error);
+    })
+  };
+
 }

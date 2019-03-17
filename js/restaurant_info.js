@@ -1,4 +1,4 @@
-let restaurant,reviewBox;
+let restaurant, reviews, form;
 var map;
 
 /**
@@ -69,7 +69,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fetchRestaurantReviews(restaurant.id);
+  
 }
 
 /**
@@ -95,21 +96,18 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
-  reviewBox = document.createElement('input');
-  reviewBox.id = 'review-text-box';
-  reviewBox.type = 'text';
-  const sendBtn = document.createElement('button');
-  sendBtn.id = 'send-btn';
-  sendBtn.onclick = onBtnClick;
-  sendBtn.innerHTML = 'Send';
-  container.appendChild(reviewBox);
-  container.appendChild(sendBtn);
+  //add a form to the page
+  let form = CreateFormHTML();
+  form.addEventListener('submit', onSubmit);
+  //if(!form) {
+    container.appendChild(form);
+  //}
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -134,7 +132,7 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = review.createdAt;
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -174,8 +172,124 @@ getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-onBtnClick = (e) => {
+onSubmit = (e) => {
+  e.preventDefault();
   console.log('in onSendClick!');
-  console.log(reviewBox.value);
+  console.log(form.elements[0].value);
+  console.log(form.elements[1].value);
+  console.log(form.elements[2].value);
   
+  fetch("http://localhost:1337/reviews/",{
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      restaurant_id: parseInt(getParameterByName('id'),10),
+      name: form.elements[0].value,
+      rating: form.elements[1].value,
+      comments: form.elements[2].value,
+    }), // body data type must match "Content-Type" header
+
+  }).then((response) => {
+    console.log(response);
+  }).catch((error) => {
+    console.log(error);
+  });
+
+  //do something
+  addNewReview();
+  form.reset();
+}
+
+addNewReview = () => {
+  const ul = document.getElementById('reviews-list');
+  ul.appendChild(createReviewHTML({
+    "id": 31,
+    "restaurant_id": 1,
+    "name": "Yubo",
+    "createdAt": new Date(),
+    "updatedAt": null,
+    "rating": 4,
+    "comments": "some contents"
+  }));
+}
+
+fetchRestaurantReviews = (id) => {
+  DBHelper.fetchReviewsByRestaurantId(id, (error, reviews) => {
+    self.reviews = reviews;
+    if(!self.reviews){
+      console.log('something went wrong while fetching the reviews')
+      return;
+    }
+    fillReviewsHTML();
+  });
+}
+
+CreateFormHTML = () => {
+
+  form = document.createElement('form');
+  form.id = 'new-review';
+  //form.method = 'post';
+  //form.action = `http://localhost:1337/reviews/`;
+
+  //add form input to the form
+  let nameLabel = document.createElement('label');
+  nameLabel.innerHTML = "your name: ";
+  nameLabel.htmlFor = "username";
+  nameLabel.form = "new-review";
+  form.appendChild(nameLabel);
+
+  let name = document.createElement('input');
+  name.type = "text";
+  name.id = "username";
+  name.name = "username";
+  name.form = "new-review";
+  form.appendChild(name);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+
+  let ratingLabel = document.createElement('label');
+  ratingLabel.innerHTML = "your rating: ";
+  ratingLabel.htmlFor = "user-rating";
+  ratingLabel.form = "new-review";
+  form.appendChild(ratingLabel);
+
+  let rating = document.createElement('select');
+  rating.id = "user-rating";
+  rating.name = "user-rating";
+  for(let i = 0; i < 5; i++){
+    var option = document.createElement('option');
+    option.value = `${i+1}`;
+    option.innerHTML = `${i+1} star(s)`;
+    rating.appendChild(option);
+  }
+  rating.form = "new-review";
+  form.appendChild(rating);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+
+  let commentsLabel = document.createElement('label');
+  commentsLabel.innerHTML = "your comments: ";
+  commentsLabel.htmlFor = "user-comments";
+  commentsLabel.form = "new-review";
+  form.appendChild(commentsLabel);
+
+  let comments = document.createElement('textarea');
+  comments.id = "user-comments";
+  comments.name = "user-comments";
+  comments.form = "new-review";
+  form.appendChild(comments);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+
+  let submitBtn = document.createElement('input');
+  submitBtn.type = "submit";
+  submitBtn.id = "submit-btn";
+  submitBtn.value = "Submit";
+  form.appendChild(submitBtn);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+
+  return form;
 }

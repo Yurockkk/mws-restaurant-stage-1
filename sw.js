@@ -180,5 +180,5 @@ self.addEventListener('sync', (event) => {
 
 doSomeStuff = () => {
 	console.log('do some stuff gets called!');
-	console.log(idb);
+	//console.log(idb);
 }
