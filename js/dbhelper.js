@@ -1,5 +1,7 @@
 let dbPromise = null;
 let isOpen = false;
+let isReviewOpen = false;
+let reviewDbPromise = null;
 /**
  * Common database helper functions.
  */
@@ -179,9 +181,9 @@ class DBHelper {
   */
   static imageSourceSetForRestaureant(restaurant) {
     var imgName = restaurant.photograph;
-    console.log(`imgName: ${imgName}`);
+    //console.log(`imgName: ${imgName}`);
     var imgSrcSet = imgName ? `/img/${imgName}_small.jpg 2x, /img/${imgName}.jpg 3x` : `http://localhost:8000/img/dr-evil.gif`;
-    console.log(`imgSrcSet: ${imgSrcSet}`);
+    //console.log(`imgSrcSet: ${imgSrcSet}`);
     return imgSrcSet;
   }
 
@@ -210,7 +212,9 @@ class DBHelper {
       let restaurantStore = upgradeDb.createObjectStore('restaurants', {
         keyPath: 'id'
       });
-      // store.createIndex('by-date', 'time');
+
+      //add review store
+      let reviewStore = upgradeDb.createObjectStore('reviews',{autoIncrement: true });
     });
   }
 
@@ -226,4 +230,11 @@ class DBHelper {
     })
   };
 
-}
+  static saveReviewToIdb(review){
+    console.log('in saveReviewToIdb');
+    dbPromise.then( db => {
+      let tx = db.transaction('reviews','readwrite');
+      return tx.objectStore('reviews').put(review);
+    });
+  }
+

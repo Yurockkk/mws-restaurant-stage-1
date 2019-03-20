@@ -172,13 +172,13 @@ self.addEventListener('message', function(event){
 });
 
 self.addEventListener('sync', (event) => {
-	if(event.tag == 'taggg'){
-		console.log('event.tag == taggg!!');
-		event.waitUntil(doSomeStuff());
+	if(event.tag == 'syncReview'){
+		console.log('event.tag == syncReview!!');
+		event.waitUntil(postReview());
 	}
 })
 
-doSomeStuff = () => {
+postReview = () => {
 	console.log('do some stuff gets called!');
 	//console.log(idb);
 }

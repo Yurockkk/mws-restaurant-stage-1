@@ -178,40 +178,50 @@ onSubmit = (e) => {
   console.log(form.elements[0].value);
   console.log(form.elements[1].value);
   console.log(form.elements[2].value);
-  
+  const reviewToAdd = {
+    restaurant_id: parseInt(getParameterByName('id'),10),
+    name: form.elements[0].value,
+    rating: form.elements[1].value,
+    comments: form.elements[2].value,
+    createdAt: Date.now()
+  };
+
+
   fetch("http://localhost:1337/reviews/",{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: {
         "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      restaurant_id: parseInt(getParameterByName('id'),10),
-      name: form.elements[0].value,
-      rating: form.elements[1].value,
-      comments: form.elements[2].value,
-    }), // body data type must match "Content-Type" header
-
+    body: JSON.stringify(reviewToAdd)
   }).then((response) => {
     console.log(response);
+    if(response.ok) return response.json();
+  }).then((addedReview) => {
+    console.log(addedReview);
+    displayNewReview(addedReview);
   }).catch((error) => {
+    //fail to add the review to the BE, do something here
     console.log(error);
+    if(!navigator.onLine){
+      //TODO: store the review to the idb
+      DBHelper.saveReviewToIdb(reviewToAdd);
+    }
+    displayNewReview(reviewToAdd);
   });
 
-  //do something
-  addNewReview();
   form.reset();
 }
 
-addNewReview = () => {
+displayNewReview = (newReview) => {
   const ul = document.getElementById('reviews-list');
   ul.appendChild(createReviewHTML({
-    "id": 31,
-    "restaurant_id": 1,
-    "name": "Yubo",
-    "createdAt": new Date(),
-    "updatedAt": null,
-    "rating": 4,
-    "comments": "some contents"
+    "id": newReview.id,
+    "restaurant_id": newReview.restaurant_id,
+    "name": newReview.name,
+    "createdAt": newReview.createdAt || Date.now(),
+    "updatedAt": newReview.updateAt,
+    "rating": newReview.rating,
+    "comments": newReview.comments
   }));
 }
 

@@ -25,7 +25,7 @@ registerServiceWorker = () => {
         //try to trigger sync event
         navigator.serviceWorker.ready.then(function(swRegistration) {
           console.log('[ServiceWorker] is ready - sync is registered');
-          return swRegistration.sync.register('taggg');
+          return swRegistration.sync.register('syncReview');
         });
 
         if(!navigator.serviceWorker.controller){
