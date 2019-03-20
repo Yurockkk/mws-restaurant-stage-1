@@ -237,4 +237,4 @@ class DBHelper {
       return tx.objectStore('reviews').put(review);
     });
   }
-
+}
