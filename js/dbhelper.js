@@ -2,22 +2,6 @@
  * Common database helper functions.
  */
 class DBHelper {
-
-  static get dbPromise() {
-    return this.constructor.dbPromise;
-  }
-
-  static set dbPromise(newValue) {
-    this.constructor.dbPromise = newValue;
-  }
-
-  static get isOpen() {
-    return this.constructor.isOpen;
-  }
-
-  static set isOpen(newValue) {
-    this.constructor.isOpen = newValue;
-  }
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -31,11 +15,6 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    console.log(DBHelper.dbPromise);
-    // if(!DBHelper.isOpen){
-    //   DBHelper.dbPromise = DBHelper.openDatabase();
-    //   DBHelper.isOpen = true;
-    // }
     reviewStore.outbox('restaurants').then(outbox => {
         return outbox.getAll();
     }).then(allCachedRestaurants => {
@@ -208,18 +187,6 @@ class DBHelper {
     return marker;
   }
 
-  static async openDatabase() {
-    
-    return await idb.openDb('my-restaurant', 1, (upgradeDb) => {
-      let restaurantStore = upgradeDb.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
-
-      //add review store
-      let reviewStore = upgradeDb.createObjectStore('reviews',{autoIncrement: true });
-    });
-  }
-
   static fetchReviewsByRestaurantId(id, callback) {
     const url = `http://localhost:1337/reviews/?restaurant_id=${id}`;
     fetch(url).then((response) => {
@@ -249,6 +216,14 @@ class DBHelper {
       console.log('error occurs in saveReviewToIdb:');
       console.log(error);
     });
+  }
+
+  static updateCachedRestaurant(updatedRestaurant){
+    console.log('in updateCachedRestaurant');
+    reviewStore.outbox('restaurants','readwrite').then(restaurantStore => {
+      updatedRestaurant.is_favorite = (updatedRestaurant.is_favorite == 'true');
+      restaurantStore.put(updatedRestaurant);
+    })
   }
 }
 

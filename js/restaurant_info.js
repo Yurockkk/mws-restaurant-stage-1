@@ -1,5 +1,6 @@
-let restaurant, reviews, form;
+let restaurant, reviews, form, fav, isFav = false;
 var map;
+
 
 /**
  * Initialize Google map, called from HTML.
@@ -14,6 +15,8 @@ window.initMap = () => {
         center: restaurant.latlng,
         scrollwheel: false
       });
+      isFav = restaurant.is_favorite;
+      fav.src = isFav ? `img/solidFav.svg` : `img/fav.svg`;
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
@@ -51,6 +54,9 @@ fetchRestaurantFromURL = (callback) => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
+
+  fav = document.getElementById('fav-icon');
+  fav.addEventListener('click', onFavClick);
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -302,4 +308,22 @@ CreateFormHTML = () => {
   form.appendChild(document.createElement('br'));
 
   return form;
+}
+
+onFavClick = () => {
+  console.log('in onFavClick');
+  console.log(fav);
+  isFav = !isFav;
+  fav.src = isFav ? `img/solidFav.svg` : `img/fav.svg`;
+  fetch(`http://localhost:1337/restaurants/${self.restaurant.id}/?is_favorite=${isFav}`,{
+    method: "PUT" // *GET, POST, PUT, DELETE, etc.
+  }).then(response => {
+    console.log(response);
+    if(response.ok) return response.json();
+  }).then(updatedRestaurant => {
+    console.log(updatedRestaurant);
+    DBHelper.updateCachedRestaurant(updatedRestaurant);
+  }).catch(err => {
+    console.log(err);
+  })
 }
