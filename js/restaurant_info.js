@@ -190,7 +190,7 @@ onSubmit = (e) => {
   fetch("http://localhost:1337/reviews/",{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
     },
     body: JSON.stringify(reviewToAdd)
   }).then((response) => {

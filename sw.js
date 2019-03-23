@@ -1,3 +1,6 @@
+importScripts('/js/idb.js');
+importScripts('/js/reviewStore.js');
+
 var staticCacheName = 'my-restaurant-v1';
 var contentImgsCache = 'my-restaurant-imgs';
 var allCaches = [
@@ -172,13 +175,37 @@ self.addEventListener('message', function(event){
 });
 
 self.addEventListener('sync', (event) => {
+	console.log('in sync:');
+	console.log(event.tag);
 	if(event.tag == 'syncReview'){
-		console.log('event.tag == syncReview!!');
-		event.waitUntil(postReview());
+		console.log('event.tag == syncReview');
+		event.waitUntil(
+		    reviewStore.outbox('reviews').then( outbox => {
+		      return outbox.getAll();
+		    }).then( cachedReviews => {
+		      return Promise.all(cachedReviews.map(function(cachedReview) {
+		        return fetch("http://localhost:1337/reviews/", {
+		          method: 'POST',
+		          body: JSON.stringify(cachedReview),
+		          headers: {
+		            'Content-Type': 'application/json'
+		          }
+		        }).then( response => {
+		          return response.json();
+		        }).then( data => {
+		        	  //if id exist, that means the review was stored to the BE db
+			          if (data.id) {
+			          	console.log('id exists, delete it in idb');
+			            return reviewStore.outbox('reviews','readwrite').then(function(outbox) {
+			              return outbox.delete(data.createdAt);
+			            });
+			          }
+		        })
+		      }))
+		    }).catch( err => {
+		      console.log(err);
+		    })
+		);
 	}
 })
 
-postReview = () => {
-	console.log('do some stuff gets called!');
-	//console.log(idb);
-}

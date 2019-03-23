@@ -1,12 +1,23 @@
-let dbPromise = null;
-let isOpen = false;
-let isReviewOpen = false;
-let reviewDbPromise = null;
 /**
  * Common database helper functions.
  */
 class DBHelper {
 
+  static get dbPromise() {
+    return this.constructor.dbPromise;
+  }
+
+  static set dbPromise(newValue) {
+    this.constructor.dbPromise = newValue;
+  }
+
+  static get isOpen() {
+    return this.constructor.isOpen;
+  }
+
+  static set isOpen(newValue) {
+    this.constructor.isOpen = newValue;
+  }
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -20,14 +31,13 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    console.log(dbPromise);
-    if(!isOpen){
-      dbPromise = DBHelper.openDatabase();
-      isOpen = true;
-    }
-    dbPromise.then(db => {
-      return db.transaction('restaurants')
-      .objectStore('restaurants').getAll();
+    console.log(DBHelper.dbPromise);
+    // if(!DBHelper.isOpen){
+    //   DBHelper.dbPromise = DBHelper.openDatabase();
+    //   DBHelper.isOpen = true;
+    // }
+    reviewStore.outbox('restaurants').then(outbox => {
+        return outbox.getAll();
     }).then(allCachedRestaurants => {
       console.log(`------allCachedRestaurants`);
       console.log(allCachedRestaurants);
@@ -41,12 +51,9 @@ class DBHelper {
           console.log(`------restaurants`);
           console.log(restaurants);
           restaurants.forEach((restaurant) => {
-            dbPromise.then((db) => {
-              let tx = db.transaction('restaurants','readwrite');
-              let restaurantStore = tx.objectStore('restaurants');
+            reviewStore.outbox('restaurants','readwrite').then(restaurantStore => {
               restaurantStore.put(restaurant);
-              return tx.complete;
-            });
+            })
           });
           callback(null, restaurants);
         });
@@ -202,12 +209,7 @@ class DBHelper {
   }
 
   static async openDatabase() {
-    // If the browser doesn't support service worker,
-    // we don't care about having a database
-    if (!navigator.serviceWorker) {
-      return Promise.resolve();
-    }
-
+    
     return await idb.openDb('my-restaurant', 1, (upgradeDb) => {
       let restaurantStore = upgradeDb.createObjectStore('restaurants', {
         keyPath: 'id'
@@ -232,9 +234,21 @@ class DBHelper {
 
   static saveReviewToIdb(review){
     console.log('in saveReviewToIdb');
-    dbPromise.then( db => {
-      let tx = db.transaction('reviews','readwrite');
-      return tx.objectStore('reviews').put(review);
+
+    reviewStore.outbox('reviews','readwrite').then(store => {
+      return store.put(review);
+    }).then(() => {
+      if('serviceWorker' in navigator){
+        //try to trigger sync event
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+          console.log('[ServiceWorker] is ready - sync is registered');
+          return swRegistration.sync.register('syncReview');
+        });
+      }
+    }).catch((error) => {
+      console.log('error occurs in saveReviewToIdb:');
+      console.log(error);
     });
   }
 }
+
