@@ -4,10 +4,15 @@
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#317EFB"/>
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" defer/>
+  <link rel="stylesheet" href="css/styles.css" defer>
   <link rel="manifest" href="manifest.json">
   <title>Restaurant Reviews</title>
+  <style>
+    label{
+      opacity: 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -25,11 +30,11 @@
     <section>
       <div class="filter-options" id="filter-options">
         <h2>Filter Results</h2>
-        <label for="neighborhoods-select" style="opacity: 0;">dropdown</label>
+        <label for="neighborhoods-select">dropdown</label>
         <select id="neighborhoods-select" name="neighborhoods dropdown" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
-        <label for="cuisines-select" style="opacity: 0;">dropdown</label>
+        <label for="cuisines-select">dropdown</label>
         <select id="cuisines-select" name="cuisines dropdown" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>

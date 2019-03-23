@@ -20,16 +20,6 @@ self.addEventListener('install', function(event){
 		'/sw.js',
 		'/index.html',
 		'/restaurant.html'
-		// 'img/1.jpg',
-		// 'img/2.jpg',
-		// 'img/3.jpg',
-		// 'img/4.jpg',
-		// 'img/5.jpg',
-		// 'img/6.jpg',
-		// 'img/7.jpg',
-		// 'img/8.jpg',
-		// 'img/9.jpg',
-		// 'img/10.jpg'
 	];
 	event.waitUntil(
 		caches.open(staticCacheName).then((cache) => {
@@ -64,18 +54,7 @@ self.addEventListener('onactivate', function(event){
 
 
 self.addEventListener('fetch', function(event) {
-	// event.respondWith(
-	// 	fetch(event.request).then((response) => {
-	// 		if(response.status === 404){
-	// 			return fetch('img/dr-evil.gif');
-	// 		}
-	// 		console.log(`reponse: ${response}`);
-	// 		return response;
-	// 	}).catch((err) => {
-	// 		console.log(`error!! ${err}`);
-	// 		return new response("something went wrong!")
-	// 	})
-	// );
+
 	var requestUrl = new URL(event.request.url);
 	//console.log(`In fetch!! requestUrl: ${requestUrl}, reqest.origin: ${requestUrl.origin}`);
 	if(requestUrl.origin === location.origin){
@@ -113,7 +92,7 @@ self.addEventListener('fetch', function(event) {
 
 serveImage = (request) => {
 	//console.log(`in serveImage, request: ${request}`);
-	var storageUrl = request.url.replace(/_small.jpg$/, '');
+	var storageUrl = request.url.replace(/_small.webp$/, '');
 	console.log(`storageUrl: ${storageUrl}`);
 
 	return caches.open(contentImgsCache).then(function(cache) {

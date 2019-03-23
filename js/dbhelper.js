@@ -180,7 +180,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return restaurant.photograph ? (`/img/${restaurant.photograph}.jpg`) : (`http://localhost:8000/img/dr-evil.gif`);
+    return restaurant.photograph ? (`/img/${restaurant.photograph}.webp`) : (`http://localhost:8000/img/default.webp`);
   }
 
   /**
@@ -189,7 +189,7 @@ class DBHelper {
   static imageSourceSetForRestaureant(restaurant) {
     var imgName = restaurant.photograph;
     //console.log(`imgName: ${imgName}`);
-    var imgSrcSet = imgName ? `/img/${imgName}_small.jpg 2x, /img/${imgName}.jpg 3x` : `http://localhost:8000/img/dr-evil.gif`;
+    var imgSrcSet = imgName ? `/img/${imgName}_small.webp 2x, /img/${imgName}.webp 3x` : `http://localhost:8000/img/default.webp`;
     //console.log(`imgSrcSet: ${imgSrcSet}`);
     return imgSrcSet;
   }
