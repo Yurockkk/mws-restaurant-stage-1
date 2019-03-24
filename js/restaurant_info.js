@@ -16,6 +16,13 @@ window.initMap = () => {
         scrollwheel: false
       });
       isFav = restaurant.is_favorite;
+      if(isFav == 'true'){
+        isFav = true;
+      }else if(isFav == 'false'){
+        isFav = false;
+      }else{
+        isFav = false;
+      }
       fav.src = isFav ? `img/solidFav.svg` : `img/fav.svg`;
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);

@@ -13,6 +13,7 @@ self.addEventListener('install', function(event){
 		'/',
 		'css/styles.css',
 		'config.js',
+		'js/reviewStore.js',
 		'js/dbhelper.js',
 		'js/main.js',
 		'js/idb.js',
