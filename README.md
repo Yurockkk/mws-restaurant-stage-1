@@ -2,9 +2,9 @@
 ---
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
-## Project Overview: Stage 2
+## Project Overview: Stage 3
 
-In **Stage Two** of the **Restaurant Reviews** projects, we are using asynchronous JavaScript to request JSON data from the API server, store data received from the server in an offline database using IndexedDB, which will create an app shell architecture. Finally, we are optimizing the app to meet performance benchmarks, which you’ll test using Lighthouse
+In **Stage Three** of the **Restaurant Reviews** projects, we are using asynchronous JavaScript to request JSON data from the API server, store data received from the server in an offline database using IndexedDB, which will create an app shell architecture. Finally, we are optimizing the app to meet performance benchmarks, which you’ll test using Lighthouse
 
 ### What do I do from here?
 
@@ -14,7 +14,7 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 
 2. With your server running, visit the site: `http://localhost:8000`, and look around for a bit to see what the current experience looks like.
 
-3. To run the API server locally, head over to [this project](https://github.com/udacity/mws-restaurant-stage-2).
+3. To run the API server locally, head over to [this project](https://github.com/udacity/mws-restaurant-stage-3), clone the project, run `npm i` to install dependencies, and then run `npm i sails -g` to instal sails.js. Finally, run `node server` to spin up the server.
 
 
 
