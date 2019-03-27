@@ -188,16 +188,34 @@ class DBHelper {
   }
 
   static fetchReviewsByRestaurantId(id, callback) {
-    const url = `http://localhost:1337/reviews/?restaurant_id=${id}`;
-    fetch(url).then((response) => {
-      if(response.ok) return response.json();
-    }).then((reviews) => {
-      console.log(reviews);
-      callback(null, reviews);
-    }).catch((error) => {
-      console.log(error);
+
+    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+      if(error){
+        return callback(error,null);
+      }
+      let reviews = restaurant.reviews;
+      if(reviews != null){
+        callback(null,reviews);
+      }
+      //we don't have cached reviews for the restaurant, go fetch it
+      const url = `http://localhost:1337/reviews/?restaurant_id=${id}`;
+      fetch(url).then((response) => {
+        if(response.ok) return response.json();
+      }).then((reviews) => {
+        console.log(reviews);
+        //save it to the idb
+        restaurant.reviews = reviews;
+        reviewStore.outbox('restaurants','readwrite').then(store => {
+          return store.put(restaurant);
+        }).then(() => {
+          //reviews are saved along with the restuarant, return the reviews
+          callback(null, reviews);
+        });
+      }).catch((error) => {
+        console.log(error);
+      })
     })
-  };
+  }
 
   static saveReviewToIdb(review){
     console.log('in saveReviewToIdb');
@@ -224,6 +242,27 @@ class DBHelper {
       updatedRestaurant.is_favorite = (updatedRestaurant.is_favorite == 'true');
       restaurantStore.put(updatedRestaurant);
     })
+  }
+
+  static saveReviewsToCachedRestaurantForOfflineDsiplay(restaurant, reviews){
+    console.log('in saveReviewToCachedRestaurantForOfflineDsiplay()');
+    // reviewStore.outbox('restaurants','readwrite').then(store => {
+    //   return store.get(restaurantId);
+    // }).then(cachedRestautant => {
+    //   if(!cachedRestautant){
+    //     console.log('something went wrong while fetching the cached restaurant.........');
+    //   }
+    //   cachedRestautant.reviews.push(review);
+    //   store.put(cachedRestautant);
+    // }).catch(error => {
+    //   console.log(`something went wrong while fetching the cached restaurant,error:${error}`);
+    // });
+    reviewStore.outbox('restaurants','readwrite').then(store => {
+      restaurant.reviews = reviews;
+      return store.put(restaurant);
+    }).catch(error => {
+      console.log(`something went wrong while fetching the cached restaurant,error:${error}`);
+    });
   }
 }
 

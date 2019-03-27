@@ -110,6 +110,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (reviews = self.reviews) => {
+  console.log(self.reviews);
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -216,7 +217,11 @@ onSubmit = (e) => {
     //fail to add the review to the BE, do something here
     console.log(error);
     if(!navigator.onLine){
-      //TODO: store the review to the idb
+      //1. store the review to the restaurant obj for offline display
+      const cachedReviews = self.reviews;
+      cachedReviews.push(reviewToAdd);
+      DBHelper.saveReviewsToCachedRestaurantForOfflineDsiplay(self.restaurant, cachedReviews);
+      //2. store the review to the idb
       DBHelper.saveReviewToIdb(reviewToAdd);
     }
     displayNewReview(reviewToAdd);
@@ -239,14 +244,19 @@ displayNewReview = (newReview) => {
 }
 
 fetchRestaurantReviews = (id) => {
-  DBHelper.fetchReviewsByRestaurantId(id, (error, reviews) => {
-    self.reviews = reviews;
-    if(!self.reviews){
-      console.log('something went wrong while fetching the reviews')
-      return;
-    }
-    fillReviewsHTML();
-  });
+  self.reviews = self.restaurant.reviews;
+  if(self.reviews){
+    fillReviewsHTML(); 
+  }else{
+    DBHelper.fetchReviewsByRestaurantId(id, (error, reviews) => {
+      self.reviews = reviews;
+      if(!self.reviews){
+        console.log(`something went wrong while fetching the reviews, error: ${error}`);
+        return;
+      }
+      fillReviewsHTML();
+    });
+  }
 }
 
 CreateFormHTML = () => {
